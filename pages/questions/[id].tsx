@@ -37,6 +37,24 @@ export default function QuestionsShow() {
         const gotQuestion = questionDoc.data() as Question
         gotQuestion.id = questionDoc.id
         setQuestion(gotQuestion)
+
+        if (!gotQuestion.isReplied) {
+            return
+        }
+
+        const answerSnapshot = await firestore()
+            .collection('answers')
+            .where('questionId', '==', gotQuestion.id)
+            .limit(1)
+            .get()
+        
+        if (answerSnapshot.empty) {
+            return
+        }
+
+        const gotAnswer = answerSnapshot.docs[0].data() as Answer
+        gotAnswer.id = answerSnapshot.docs[0].id
+        setAnswer(gotAnswer)
     }
 
     async function onSubmit(e: FormEvent<HTMLFormElement>) {
@@ -54,7 +72,15 @@ export default function QuestionsShow() {
                 isReplied: true,
             })
         })
-        setIsSending(false)
+
+        const now = new Date().getTime()
+        setAnswer({
+            id: '',
+            uid: user.uid,
+            questionId: question.id,
+            body,
+            createdAt: new firestore.Timestamp(now /1000, now % 1000),
+        })
     }
 
     useEffect(() => {
@@ -66,10 +92,14 @@ export default function QuestionsShow() {
             <div className="row justify-content-center">
                 <div className="col-12 col-md-6">
                     {question && (
+                        <>
                         <div className="card">
                             <div className="card-body">{question.body}</div>
+                        </div>
                             <section className="text-center mt-4">
-                                <h2 className="h4">回答する</h2>
+                                <h2 className="h4">回答</h2>
+
+                                {answer === null ? (
                                 <form onSubmit={onSubmit}>
                                     <textarea
                                         className="form-control"
@@ -89,8 +119,13 @@ export default function QuestionsShow() {
                                         )}
                                     </div>
                                 </form>
+                                ) : (
+                                    <div className="card">
+                                        <div className="card-body text-left">{answer.body}</div>
+                                    </div>
+                                )}
                             </section>
-                        </div>
+                        </>
                     )}
                 </div>
             </div>
