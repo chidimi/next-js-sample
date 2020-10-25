@@ -1,4 +1,4 @@
-import Link from 'next/dist/client/link'
+import Link from 'next/link'
 import Head from 'next/head'
 import React from 'react'
 import { useAuthentication } from '../hooks/authentication'
