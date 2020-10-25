@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
 import firebase from 'firebase'
-import Link from 'next/link'
+import Link from 'next/dist/client/link'
 import React, { useEffect, useRef, useState } from 'react'
 import Layout from '../../components/Layout'
 import { useAuthentication } from '../../hooks/authentication'
