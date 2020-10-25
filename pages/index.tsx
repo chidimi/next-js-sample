@@ -1,7 +1,8 @@
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import { useAuthentication } from '../hooks/authentication'
-import Link from 'next/Link'
+import React from 'react'
+import Link from 'next/dist/client/link'
 
 export default function Home() {
   const { user } = useAuthentication()
